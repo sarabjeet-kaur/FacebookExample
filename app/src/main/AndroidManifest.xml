@@ -30,7 +30,8 @@
 
         <activity android:name=".DetailActivity" />
         <activity android:name=".PostActivity" />
-        <activity android:name=".GooglePlusActivity"></activity>
+        <activity android:name=".GooglePlusActivity" />
+        <activity android:name=".TwitterActivity"></activity>
     </application>
 
 </manifest>

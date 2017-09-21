@@ -8,18 +8,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.facebookexample.utility.AppConstants;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
     ImageView iv_image;
     TextView tv_name, tv_email, tv_id,tv_dob, tv_gender,txt_name;
     String str_name, str_email, str_id, str_birthday,str_gender,str_image,str_tag;
     Button btn_post,btn_logout;
-
 
 
     @Override
@@ -55,6 +53,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         tv_gender.setText(str_gender);
         txt_name.setText(str_tag);
 
+
     }
 
     @Override
@@ -65,24 +64,20 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     LoginManager.getInstance().logOut();
                     startActivity(new Intent(DetailActivity.this,MainActivity.class));
                 }else if(str_tag.equals("Google+")){
-                    try{
-                        if (AppConstants.mGoogleApiClient.isConnected()){
-                            Auth.GoogleSignInApi.signOut(AppConstants.mGoogleApiClient);
-                            Log.e("google client in detail",AppConstants.mGoogleApiClient+"");
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
+                    Log.e("in detail","sign out");
+                    GooglePlusActivity.listeners.googleSignout(DetailActivity.this);
                     startActivity(new Intent(DetailActivity.this,MainActivity.class));
                 }
-
                 break;
             case R.id.btn_post:
-                startActivity(new Intent(DetailActivity.this,PostActivity.class));
-
+                Intent intent=new Intent(DetailActivity.this,PostActivity.class);
+                intent.putExtra("tag",str_tag);
+                startActivity(intent);
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Please Logout To proceed", Toast.LENGTH_SHORT).show();
+    }
 }

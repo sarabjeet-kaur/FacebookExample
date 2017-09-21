@@ -36,15 +36,18 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     CallbackManager callbackManager;
-  TextView tv_facebook,txt_name;
-    LinearLayout ll_facebook,ll_google;
+    TextView tv_facebook,txt_name;
+    LinearLayout ll_facebook,ll_google,ll_twitter;
     String str_facebookname, str_facebookemail, str_facebookid, str_birthday, str_location,str_gender,str_facebookimage;
     Button btn_logout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         init();
         getKeyHash();
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_logout.setVisibility(View.GONE);
         ll_facebook = (LinearLayout) findViewById(R.id.ll_facebook);
         ll_google = (LinearLayout) findViewById(R.id.ll_google);
+        ll_twitter = (LinearLayout) findViewById(R.id.ll_twitter);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         AppEventsLogger.activateApp(this);
 
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void listener() {
         ll_facebook.setOnClickListener(this);
         ll_google.setOnClickListener(this);
+        ll_twitter.setOnClickListener(this);
 
     }
 
@@ -226,6 +231,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case  R.id.ll_google:
                 startActivity(new Intent(MainActivity.this,GooglePlusActivity.class));
+                break;
+            case R.id.ll_twitter:
+                startActivity(new Intent(MainActivity.this,TwitterActivity.class));
+                break;
         }
 
     }
@@ -233,5 +242,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         LoginManager.getInstance().logOut();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.facebookexample;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.facebookexample.utility.AppConstants;
+import com.example.facebookexample.listeners.LogoutListeners;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -19,12 +20,13 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import static com.example.facebookexample.utility.AppConstants.mGoogleApiClient;
 
-public class GooglePlusActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class GooglePlusActivity extends AppCompatActivity implements
+        GoogleApiClient.OnConnectionFailedListener,LogoutListeners {
     private static final String TAG = "GooglePlusActivity";
     private static final int RC_SIGN_IN = 9001;
-   // private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
+    public static LogoutListeners listeners = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +41,18 @@ public class GooglePlusActivity extends AppCompatActivity implements GoogleApiCl
                 .requestScopes(new Scope(Scopes.PROFILE))
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this , this )
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(Plus.API)
                 .addScope(new Scope(Scopes.PLUS_LOGIN))
                 .addScope(new Scope(Scopes.PLUS_ME))
                 .addScope(new Scope(Scopes.PROFILE))
                 .build();
+        listeners = this;
         signIn();
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -57,43 +61,64 @@ public class GooglePlusActivity extends AppCompatActivity implements GoogleApiCl
             handleSignInResult(result);
         }
     }
+
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
-            Person person = Plus.PeopleApi.getCurrentPerson(AppConstants.mGoogleApiClient);
+
+            Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
             Uri photo = acct.getPhotoUrl();
-            String photo1= String.valueOf(photo);
+            String photo1 = String.valueOf(photo);
 
-            Intent intent=new Intent(GooglePlusActivity.this,DetailActivity.class);
-            intent.putExtra("name",acct.getDisplayName());
-            intent.putExtra("email",acct.getEmail());
-            intent.putExtra("dob",person.getBirthday());
-            intent.putExtra("id",acct.getId());
-            int gender=person.getGender();
-            if(gender==1){
-                intent.putExtra("gender","Female");
-            }
-            else{
-                intent.putExtra("gender","Male");
+            Intent intent = new Intent(GooglePlusActivity.this, DetailActivity.class);
+            intent.putExtra("name", acct.getDisplayName());
+            intent.putExtra("email", acct.getEmail());
+            intent.putExtra("dob", person.getBirthday());
+            intent.putExtra("id", acct.getId());
+            int gender = person.getGender();
+            if (gender == 1) {
+                intent.putExtra("gender", "Female");
+            } else {
+                intent.putExtra("gender", "Male");
             }
 
-            intent.putExtra("image",photo1);
-            intent.putExtra("tag","Google+");
+            intent.putExtra("image", photo1);
+            intent.putExtra("tag", "Google+");
             startActivity(intent);
 
-        } else {
 
+        } else {
+            Log.e(TAG, "api client not connected");
         }
     }
+
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(AppConstants.mGoogleApiClient);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Log.e(TAG, "onConnectionFailed:" + connectionResult);
+
+    }
+
+    @Override
+    public void googleSignout(Activity activity) {
+        Log.e("googleSignout", mGoogleApiClient + "");
+        if (mGoogleApiClient.isConnected())
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+    }
+
+    @Override
+    public void facebookSignout() {
+
+    }
+
+    @Override
+    public void twitterSignout() {
 
     }
 }
