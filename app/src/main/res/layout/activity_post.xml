@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center"
+    tools:context="com.example.facebookexample.PostActivity">
+
+
+    <EditText
+        android:textColor="@android:color/black"
+        android:gravity="start"
+        android:background="#d3d3d3"
+        android:id="@+id/tv_post"
+        android:textSize="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+    <LinearLayout
+        android:layout_marginTop="20dp"
+
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <com.facebook.share.widget.ShareButton
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+       android:textColor="@android:color/white"
+        android:id="@+id/fb_share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/google_share"
+            android:layout_marginLeft="20dp"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:text="Google+"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp" />
+    </LinearLayout>
+
+</LinearLayout>
