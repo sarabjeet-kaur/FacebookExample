@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.facebookexample.listeners.LogoutListeners;
 import com.google.android.gms.auth.api.Auth;
@@ -16,7 +17,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
@@ -34,6 +37,7 @@ public class GooglePlusActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_google_plus);
 
 
+        listeners = this;
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestScopes(new Scope(Scopes.PLUS_LOGIN))
@@ -48,9 +52,15 @@ public class GooglePlusActivity extends AppCompatActivity implements
                 .addScope(new Scope(Scopes.PLUS_ME))
                 .addScope(new Scope(Scopes.PROFILE))
                 .build();
-        listeners = this;
-        signIn();
 
+    }
+
+    @Override
+    protected void onStart() {
+
+
+        signIn();
+        super.onStart();
     }
 
     @Override
@@ -109,7 +119,16 @@ public class GooglePlusActivity extends AppCompatActivity implements
     public void googleSignout(Activity activity) {
         Log.e("googleSignout", mGoogleApiClient + "");
         if (mGoogleApiClient.isConnected())
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            // ...
+                            Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
+                            Intent i=new Intent(getApplicationContext(),MainActivity.class);
+                            startActivity(i);
+                        }
+                    });
     }
 
     @Override

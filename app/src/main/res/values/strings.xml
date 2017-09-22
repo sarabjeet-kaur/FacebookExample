@@ -1,4 +1,6 @@
-<resources>
+<resources xmlns:android="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">FacebookExample</string>
     <string name="facebook_app_id">1572962736089346</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">TEN1U9lwooAlGfz256tjWucMG</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">S6eaE2B2liklSrVVcQ6kSS8U1dJ0brcrMsPPm2p8ki2Zp9gwc0</string>
 </resources>

@@ -25,6 +25,12 @@ import com.facebook.HttpMethod;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import org.json.JSONObject;
 
@@ -33,13 +39,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final String TAG = getClass().getSimpleName();
     CallbackManager callbackManager;
     TextView tv_facebook,txt_name;
-    LinearLayout ll_facebook,ll_google,ll_twitter;
+    LinearLayout ll_facebook,ll_google;
     String str_facebookname, str_facebookemail, str_facebookid, str_birthday, str_location,str_gender,str_facebookimage;
     Button btn_logout;
+    TwitterLoginButton twitter_login;
 
 
     @Override
@@ -49,12 +58,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+
         init();
         getKeyHash();
         listener();
     }
 
 
+   //itialise view
     private void init() {
         tv_facebook=(TextView)findViewById(R.id.tv_facebook);
         txt_name=(TextView)findViewById(R.id.txt_name);
@@ -63,19 +74,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_logout.setVisibility(View.GONE);
         ll_facebook = (LinearLayout) findViewById(R.id.ll_facebook);
         ll_google = (LinearLayout) findViewById(R.id.ll_google);
-        ll_twitter = (LinearLayout) findViewById(R.id.ll_twitter);
+        twitter_login = (TwitterLoginButton) findViewById(R.id.twitter_login);
+
+        //facebook sdk initialisation
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         AppEventsLogger.activateApp(this);
 
+        twitterLogin();
+
     }
 
+    //methos for click listener
     private void listener() {
         ll_facebook.setOnClickListener(this);
         ll_google.setOnClickListener(this);
-        ll_twitter.setOnClickListener(this);
 
     }
 
+
+    //method for twitter login
+    private void twitterLogin(){
+        twitter_login.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                // Do something with result, which provides a TwitterSession for making API calls
+                Log.e(TAG, "twiter loggedin scuccess");
+
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtra("name", result.data.getUserName());
+                intent.putExtra("id", result.data.getUserId());
+                intent.putExtra("tag", "Twitter");
+                intent.putExtra("email", str_facebookemail);
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                // Do something on failure
+                Log.e(TAG, "twiter loggedin failed");
+            }
+        });
+    }
+
+    //method for facebook login
     private void facebookLogin() {
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -170,9 +212,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE) {
+            //  twitter related handling
+            twitter_login.onActivityResult(requestCode, resultCode, data);
+        } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
+            // facebook related handling
+        }
     }
 
+
+
+    //mehtod gor getting key hash
     private void getKeyHash() {
         // Add code to print out the key hash
         try {
@@ -189,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+   //method to fetch facebook profile pic
     private void fn_profilepic() {
 
         Bundle params = new Bundle();
@@ -231,9 +283,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case  R.id.ll_google:
                 startActivity(new Intent(MainActivity.this,GooglePlusActivity.class));
-                break;
-            case R.id.ll_twitter:
-                startActivity(new Intent(MainActivity.this,TwitterActivity.class));
                 break;
         }
 

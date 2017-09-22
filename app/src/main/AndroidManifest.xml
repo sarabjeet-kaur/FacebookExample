@@ -10,6 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".utility.AppInitials"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -31,7 +32,6 @@
         <activity android:name=".DetailActivity" />
         <activity android:name=".PostActivity" />
         <activity android:name=".GooglePlusActivity" />
-        <activity android:name=".TwitterActivity"></activity>
     </application>
 
 </manifest>
