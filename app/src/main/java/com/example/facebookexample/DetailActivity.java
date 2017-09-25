@@ -34,7 +34,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    //Intialise the view
+    //Initialise the view
     private void initView() {
         iv_image = (ImageView) findViewById(R.id.iv_image);
         tv_name = (TextView) findViewById(R.id.tv_name);
@@ -48,7 +48,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    //mehtos for click listener
+    //method for click listener
     private void clickListener() {
         btn_post.setOnClickListener(this);
         btn_logout.setOnClickListener(this);

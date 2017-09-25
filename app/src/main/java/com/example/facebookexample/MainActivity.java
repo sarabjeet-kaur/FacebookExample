@@ -56,16 +56,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         init();
         getKeyHash();
         listener();
     }
 
 
-   //itialise view
+   //initialise view
     private void init() {
         tv_facebook=(TextView)findViewById(R.id.tv_facebook);
         txt_name=(TextView)findViewById(R.id.txt_name);
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //methos for click listener
+    //method for click listener
     private void listener() {
         ll_facebook.setOnClickListener(this);
         ll_google.setOnClickListener(this);
@@ -97,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         twitter_login.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                // Do something with result, which provides a TwitterSession for making API calls
                 Log.e(TAG, "twiter loggedin scuccess");
 
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
